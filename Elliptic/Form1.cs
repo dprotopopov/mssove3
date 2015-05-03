@@ -2,15 +2,12 @@
 using System.ComponentModel;
 using System.Data.SQLite;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 
 namespace Elliptic
 {
     public partial class Form1 : Form
     {
-        private const string Filename = "testFile.db";
-
         public Form1()
         {
             InitializeComponent();
@@ -28,9 +25,8 @@ namespace Elliptic
             ulong a4 = GetA4();
             ulong a6 = GetA6();
 
-            if (File.Exists(Filename)) File.Delete(Filename);
-            SQLiteConnection.CreateFile(Filename);
-            var connection = new SQLiteConnection("Data Source=" + Filename + ";Version=3;");
+            // http://stackoverflow.com/questions/9173485/how-can-i-create-an-in-memory-sqlite-database
+            var connection = new SQLiteConnection("Data Source=:memory:");
             connection.Open();
 
             string[] sqls1 =
@@ -63,16 +59,17 @@ namespace Elliptic
                 new SQLiteCommand(sql, connection).ExecuteNonQuery();
             }
 
-            if((a1%n)!=0) for (ulong x = 0; x < n; x++)
-            {
-                ulong a1X = (a1*x)%n;
-                for (ulong y = 0; y < n; y++)
+            if ((a1%n) != 0)
+                for (ulong x = 0; x < n; x++)
                 {
-                    ulong key3 = (a1X*y)%n;
-                    string sql = "INSERT INTO t3 (x, y, key3) VALUES (" + x + "," + y + "," + key3 + ")";
-                    new SQLiteCommand(sql, connection).ExecuteNonQuery();
+                    ulong a1X = (a1*x)%n;
+                    for (ulong y = 0; y < n; y++)
+                    {
+                        ulong key3 = (a1X*y)%n;
+                        string sql = "INSERT INTO t3 (x, y, key3) VALUES (" + x + "," + y + "," + key3 + ")";
+                        new SQLiteCommand(sql, connection).ExecuteNonQuery();
+                    }
                 }
-            }
 
             string[] sqls2 =
             {
@@ -90,9 +87,10 @@ namespace Elliptic
 
             var bitmap = new Bitmap((int) n, (int) n);
             Graphics.FromImage(bitmap).Clear(Color.White);
-            string select = ((a1%n)==0)
-                ?"SELECT t1.x,t2.y FROM t1, t2 WHERE key1=key2"
-                :"SELECT t1.x,t2.y FROM t1, t2, t3 WHERE (key1=key2+key3 or key1+"+n+"=key2+key3) AND t1.x=t3.x AND t2.y=t3.y";
+            string select = ((a1%n) == 0)
+                ? "SELECT t1.x,t2.y FROM t1, t2 WHERE key1=key2"
+                : "SELECT t1.x,t2.y FROM t1, t2, t3 WHERE (key1=key2+key3 or key1+" + n +
+                  "=key2+key3) AND t1.x=t3.x AND t2.y=t3.y";
             SQLiteDataReader reader = new SQLiteCommand(select, connection).ExecuteReader();
             while (reader.Read())
             {
