@@ -1,8 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Data.SQLite;
-using System.Diagnostics;
 using System.Drawing;
+using System.IO;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Elliptic
@@ -93,20 +94,28 @@ namespace Elliptic
                 : "SELECT t1.x,t2.y FROM t1, t2, t3 WHERE (key1=key2+key3 or key1+" + n +
                   "=key2+key3) AND t1.x=t3.x AND t2.y=t3.y";
             SQLiteDataReader reader = new SQLiteCommand(select, connection).ExecuteReader();
-            Debug.WriteLine("n=" + n);
-            Debug.WriteLine("a1=" + a1);
-            Debug.WriteLine("a2=" + a2);
-            Debug.WriteLine("a3=" + a3);
-            Debug.WriteLine("a4=" + a4);
-            Debug.WriteLine("a6=" + a6);
+            var sb = new StringBuilder();
+            var sb1 = new StringBuilder();
+            sb.AppendLine("n=" + n);
+            sb.AppendLine("a1=" + a1);
+            sb.AppendLine("a2=" + a2);
+            sb.AppendLine("a3=" + a3);
+            sb.AppendLine("a4=" + a4);
+            sb.AppendLine("a6=" + a6);
+            sb.AppendLine();
+            sb.AppendLine("# X Y");
+            sb1.AppendLine("# X Y");
             while (reader.Read())
             {
                 int x = Convert.ToInt32(reader[0]);
                 int y = Convert.ToInt32(reader[1]);
                 bitmap.SetPixel(x, y, Color.Black);
-                Debug.WriteLine("("+x+","+y+")");
+                sb.AppendLine(x + " " + y);
+                sb1.AppendLine(x + " " + y);
             }
             SetBitmap(bitmap);
+            SetReport(sb.ToString());
+            SetReport1(sb1.ToString());
             connection.Close();
             UnlockForm();
             ActivatePage(2);
@@ -129,6 +138,38 @@ namespace Elliptic
             else
             {
                 pictureBox1.Image = bitmap;
+            }
+        }
+
+        private void SetReport(string text)
+        {
+            // InvokeRequired required compares the thread ID of the
+            // calling thread to the thread ID of the creating thread.
+            // If these threads are different, it returns true.
+            if (pictureBox1.InvokeRequired)
+            {
+                SetReportCallback d = SetReport;
+                Invoke(d, new object[] {text});
+            }
+            else
+            {
+                textBox2.Text = text;
+            }
+        }
+
+        private void SetReport1(string text)
+        {
+            // InvokeRequired required compares the thread ID of the
+            // calling thread to the thread ID of the creating thread.
+            // If these threads are different, it returns true.
+            if (pictureBox1.InvokeRequired)
+            {
+                SetReportCallback d = SetReport1;
+                Invoke(d, new object[] {text});
+            }
+            else
+            {
+                textBox3.Text = text;
             }
         }
 
@@ -279,6 +320,13 @@ namespace Elliptic
         {
         }
 
+        private void textBox3_DoubleClick(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(textBox3.Text)) MessageBox.Show(@"Нет данных");
+            else if (saveFileDialog2.ShowDialog() == DialogResult.OK)
+                File.WriteAllText(saveFileDialog2.FileName, textBox3.Text);
+        }
+
         private delegate void ActivatePageCallback(int i);
 
         private delegate ulong GetNumberCallback();
@@ -286,5 +334,7 @@ namespace Elliptic
         private delegate void LockUnlockFormCallback();
 
         private delegate void SetBitmapCallback(Bitmap bitmap);
+
+        private delegate void SetReportCallback(string text);
     }
 }

@@ -156,4 +156,7 @@ if(a1==0 mod N) select t1.x,t2.y from t1, t2 where key1=key2
 
 DBMS - SQLite</value>
   </data>
+  <metadata name="saveFileDialog2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>419, 17</value>
+  </metadata>
 </root>
