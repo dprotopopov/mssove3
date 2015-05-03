@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -92,11 +93,18 @@ namespace Elliptic
                 : "SELECT t1.x,t2.y FROM t1, t2, t3 WHERE (key1=key2+key3 or key1+" + n +
                   "=key2+key3) AND t1.x=t3.x AND t2.y=t3.y";
             SQLiteDataReader reader = new SQLiteCommand(select, connection).ExecuteReader();
+            Debug.WriteLine("n=" + n);
+            Debug.WriteLine("a1=" + a1);
+            Debug.WriteLine("a2=" + a2);
+            Debug.WriteLine("a3=" + a3);
+            Debug.WriteLine("a4=" + a4);
+            Debug.WriteLine("a6=" + a6);
             while (reader.Read())
             {
                 int x = Convert.ToInt32(reader[0]);
                 int y = Convert.ToInt32(reader[1]);
                 bitmap.SetPixel(x, y, Color.Black);
+                Debug.WriteLine("("+x+","+y+")");
             }
             SetBitmap(bitmap);
             connection.Close();
