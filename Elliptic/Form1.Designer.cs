@@ -259,11 +259,6 @@
             this.numericUpDownA1.Name = "numericUpDownA1";
             this.numericUpDownA1.Size = new System.Drawing.Size(234, 26);
             this.numericUpDownA1.TabIndex = 2;
-            this.numericUpDownA1.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             // 
             // label1
             // 

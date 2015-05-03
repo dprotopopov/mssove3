@@ -149,7 +149,8 @@ x y key3=a1*x*y mod N
 ...
 N N ...
 
-select t1.x,t2.y from t1, t2, t3 where (key1=key2+key3 or key1+N=key2+key3) and t1.x=t3.x and t2.y=t3.y
+if(a1!=0 mod N) select t1.x,t2.y from t1, t2, t3 where (key1=key2+key3 or key1+N=key2+key3) and t1.x=t3.x and t2.y=t3.y
+if(a1==0 mod N) select t1.x,t2.y from t1, t2 where key1=key2
 
 аргументы N a1 a2 a3 a4 a6
 

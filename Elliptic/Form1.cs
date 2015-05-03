@@ -63,7 +63,7 @@ namespace Elliptic
                 new SQLiteCommand(sql, connection).ExecuteNonQuery();
             }
 
-            for (ulong x = 0; x < n; x++)
+            if((a1%n)!=0) for (ulong x = 0; x < n; x++)
             {
                 ulong a1X = (a1*x)%n;
                 for (ulong y = 0; y < n; y++)
@@ -90,7 +90,9 @@ namespace Elliptic
 
             var bitmap = new Bitmap((int) n, (int) n);
             Graphics.FromImage(bitmap).Clear(Color.White);
-            string select = "SELECT t1.x,t2.y FROM t1, t2, t3 WHERE (key1=key2+key3 or key1+"+n+"=key2+key3) AND t1.x=t3.x AND t2.y=t3.y";
+            string select = ((a1%n)==0)
+                ?"SELECT t1.x,t2.y FROM t1, t2 WHERE key1=key2"
+                :"SELECT t1.x,t2.y FROM t1, t2, t3 WHERE (key1=key2+key3 or key1+"+n+"=key2+key3) AND t1.x=t3.x AND t2.y=t3.y";
             SQLiteDataReader reader = new SQLiteCommand(select, connection).ExecuteReader();
             while (reader.Read())
             {
