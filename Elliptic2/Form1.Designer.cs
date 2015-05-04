@@ -1,4 +1,4 @@
-﻿namespace Elliptic
+﻿namespace Elliptic2
 {
     partial class Form1
     {
@@ -28,16 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.wizardPages1 = new Elliptic.WizardPages();
+            this.saveFileDialog2 = new System.Windows.Forms.SaveFileDialog();
+            this.wizardPages1 = new Elliptic2.WizardPages();
             this.tabPage0 = new System.Windows.Forms.TabPage();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.numericUpDownXmax = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownXmin = new System.Windows.Forms.NumericUpDown();
             this.button1 = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.numericUpDownA6 = new System.Windows.Forms.NumericUpDown();
@@ -57,10 +61,11 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.textBox3 = new System.Windows.Forms.TextBox();
-            this.saveFileDialog2 = new System.Windows.Forms.SaveFileDialog();
             this.wizardPages1.SuspendLayout();
             this.tabPage0.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownXmax)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownXmin)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownA6)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownA4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownA3)).BeginInit();
@@ -113,10 +118,16 @@
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox1.Size = new System.Drawing.Size(895, 614);
             this.textBox1.TabIndex = 1;
-            this.textBox1.Text = resources.GetString("textBox1.Text");
+            this.textBox1.Text = "y^2+a1*x*y+a3*y = x^3+a2*x^2+a4*x+a6\r\n\r\na=a(x)=1\r\nb=b(x)=a1*x+a3\r\nc=c(x)=-(x^3+a2" +
+    "*x^2+a4*x+a6)\r\n\r\nayy+by+c=0\r\nD=bb-4ac\r\ny1=(-b-sqrt(D))/(2a)\r\ny2=(-b+sqrt(D))/(2a" +
+    ")\r\n";
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.label8);
+            this.tabPage1.Controls.Add(this.label7);
+            this.tabPage1.Controls.Add(this.numericUpDownXmax);
+            this.tabPage1.Controls.Add(this.numericUpDownXmin);
             this.tabPage1.Controls.Add(this.button1);
             this.tabPage1.Controls.Add(this.label6);
             this.tabPage1.Controls.Add(this.numericUpDownA6);
@@ -138,9 +149,73 @@
             this.tabPage1.Text = "Параметры";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(262, 318);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(49, 20);
+            this.label8.TabIndex = 16;
+            this.label8.Text = "Xmax";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(262, 290);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(45, 20);
+            this.label7.TabIndex = 15;
+            this.label7.Text = "Xmin";
+            // 
+            // numericUpDownXmax
+            // 
+            this.numericUpDownXmax.DecimalPlaces = 4;
+            this.numericUpDownXmax.Location = new System.Drawing.Point(324, 316);
+            this.numericUpDownXmax.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
+            this.numericUpDownXmax.Minimum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            -2147483648});
+            this.numericUpDownXmax.Name = "numericUpDownXmax";
+            this.numericUpDownXmax.Size = new System.Drawing.Size(234, 26);
+            this.numericUpDownXmax.TabIndex = 14;
+            this.numericUpDownXmax.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            // 
+            // numericUpDownXmin
+            // 
+            this.numericUpDownXmin.DecimalPlaces = 4;
+            this.numericUpDownXmin.Location = new System.Drawing.Point(324, 284);
+            this.numericUpDownXmin.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
+            this.numericUpDownXmin.Minimum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            -2147483648});
+            this.numericUpDownXmin.Name = "numericUpDownXmin";
+            this.numericUpDownXmin.Size = new System.Drawing.Size(234, 26);
+            this.numericUpDownXmin.TabIndex = 13;
+            this.numericUpDownXmin.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            -2147483648});
+            // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(354, 380);
+            this.button1.Location = new System.Drawing.Point(364, 432);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(159, 63);
             this.button1.TabIndex = 12;
@@ -151,7 +226,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(271, 264);
+            this.label6.Location = new System.Drawing.Point(262, 205);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(27, 20);
             this.label6.TabIndex = 11;
@@ -159,12 +234,18 @@
             // 
             // numericUpDownA6
             // 
-            this.numericUpDownA6.Location = new System.Drawing.Point(333, 262);
+            this.numericUpDownA6.DecimalPlaces = 4;
+            this.numericUpDownA6.Location = new System.Drawing.Point(324, 203);
             this.numericUpDownA6.Maximum = new decimal(new int[] {
-            100000,
+            1000000,
             0,
             0,
             0});
+            this.numericUpDownA6.Minimum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            -2147483648});
             this.numericUpDownA6.Name = "numericUpDownA6";
             this.numericUpDownA6.Size = new System.Drawing.Size(234, 26);
             this.numericUpDownA6.TabIndex = 10;
@@ -177,7 +258,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(271, 232);
+            this.label5.Location = new System.Drawing.Point(262, 173);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(27, 20);
             this.label5.TabIndex = 9;
@@ -185,12 +266,18 @@
             // 
             // numericUpDownA4
             // 
-            this.numericUpDownA4.Location = new System.Drawing.Point(333, 230);
+            this.numericUpDownA4.DecimalPlaces = 4;
+            this.numericUpDownA4.Location = new System.Drawing.Point(324, 171);
             this.numericUpDownA4.Maximum = new decimal(new int[] {
-            100000,
+            1000000,
             0,
             0,
             0});
+            this.numericUpDownA4.Minimum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            -2147483648});
             this.numericUpDownA4.Name = "numericUpDownA4";
             this.numericUpDownA4.Size = new System.Drawing.Size(234, 26);
             this.numericUpDownA4.TabIndex = 8;
@@ -203,7 +290,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(271, 200);
+            this.label4.Location = new System.Drawing.Point(262, 141);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(27, 20);
             this.label4.TabIndex = 7;
@@ -211,12 +298,18 @@
             // 
             // numericUpDownA3
             // 
-            this.numericUpDownA3.Location = new System.Drawing.Point(333, 198);
+            this.numericUpDownA3.DecimalPlaces = 4;
+            this.numericUpDownA3.Location = new System.Drawing.Point(324, 139);
             this.numericUpDownA3.Maximum = new decimal(new int[] {
-            100000,
+            1000000,
             0,
             0,
             0});
+            this.numericUpDownA3.Minimum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            -2147483648});
             this.numericUpDownA3.Name = "numericUpDownA3";
             this.numericUpDownA3.Size = new System.Drawing.Size(234, 26);
             this.numericUpDownA3.TabIndex = 6;
@@ -229,7 +322,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(271, 168);
+            this.label3.Location = new System.Drawing.Point(262, 109);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(27, 20);
             this.label3.TabIndex = 5;
@@ -237,12 +330,18 @@
             // 
             // numericUpDownA2
             // 
-            this.numericUpDownA2.Location = new System.Drawing.Point(333, 166);
+            this.numericUpDownA2.DecimalPlaces = 4;
+            this.numericUpDownA2.Location = new System.Drawing.Point(324, 107);
             this.numericUpDownA2.Maximum = new decimal(new int[] {
-            100000,
+            1000000,
             0,
             0,
             0});
+            this.numericUpDownA2.Minimum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            -2147483648});
             this.numericUpDownA2.Name = "numericUpDownA2";
             this.numericUpDownA2.Size = new System.Drawing.Size(234, 26);
             this.numericUpDownA2.TabIndex = 4;
@@ -255,7 +354,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(271, 136);
+            this.label2.Location = new System.Drawing.Point(262, 77);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(27, 20);
             this.label2.TabIndex = 3;
@@ -263,12 +362,18 @@
             // 
             // numericUpDownA1
             // 
-            this.numericUpDownA1.Location = new System.Drawing.Point(333, 134);
+            this.numericUpDownA1.DecimalPlaces = 4;
+            this.numericUpDownA1.Location = new System.Drawing.Point(324, 75);
             this.numericUpDownA1.Maximum = new decimal(new int[] {
-            100000,
+            1000000,
             0,
             0,
             0});
+            this.numericUpDownA1.Minimum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            -2147483648});
             this.numericUpDownA1.Name = "numericUpDownA1";
             this.numericUpDownA1.Size = new System.Drawing.Size(234, 26);
             this.numericUpDownA1.TabIndex = 2;
@@ -276,7 +381,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(271, 94);
+            this.label1.Location = new System.Drawing.Point(262, 350);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(20, 20);
             this.label1.TabIndex = 1;
@@ -284,7 +389,7 @@
             // 
             // numericUpDownN
             // 
-            this.numericUpDownN.Location = new System.Drawing.Point(333, 92);
+            this.numericUpDownN.Location = new System.Drawing.Point(324, 348);
             this.numericUpDownN.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -384,12 +489,14 @@
             this.ClientSize = new System.Drawing.Size(909, 653);
             this.Controls.Add(this.wizardPages1);
             this.Name = "Form1";
-            this.Text = "Эллиптическая кривая в кольце вычетов";
+            this.Text = "Эллиптическая кривая в действительных числах";
             this.wizardPages1.ResumeLayout(false);
             this.tabPage0.ResumeLayout(false);
             this.tabPage0.PerformLayout();
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownXmax)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownXmin)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownA6)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownA4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownA3)).EndInit();
@@ -433,6 +540,10 @@
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.SaveFileDialog saveFileDialog2;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.NumericUpDown numericUpDownXmax;
+        private System.Windows.Forms.NumericUpDown numericUpDownXmin;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
     }
 }

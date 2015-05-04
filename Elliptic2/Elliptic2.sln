@@ -1,9 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elliptic", "Elliptic.csproj", "{F954EAAE-117F-43C7-BBF9-5FC77ED09855}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elliptic2", "..\Elliptic2\Elliptic2.csproj", "{5B4ABFA8-80B4-4225-AD92-6E818A7E4A15}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elliptic2", "Elliptic2.csproj", "{F954EAAE-117F-43C7-BBF9-5FC77ED09855}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +13,6 @@ Global
 		{F954EAAE-117F-43C7-BBF9-5FC77ED09855}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F954EAAE-117F-43C7-BBF9-5FC77ED09855}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F954EAAE-117F-43C7-BBF9-5FC77ED09855}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5B4ABFA8-80B4-4225-AD92-6E818A7E4A15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5B4ABFA8-80B4-4225-AD92-6E818A7E4A15}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5B4ABFA8-80B4-4225-AD92-6E818A7E4A15}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5B4ABFA8-80B4-4225-AD92-6E818A7E4A15}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

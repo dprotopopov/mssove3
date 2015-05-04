@@ -1,13 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Data.SQLite;
 using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
-namespace Elliptic
+namespace Elliptic2
 {
     public partial class Form1 : Form
     {
@@ -22,78 +21,17 @@ namespace Elliptic
         {
             LockForm();
 
-            // Параметры кольца вычетов Z|n
-            ulong n = GetN();
-
             // Параметры элиптической кривой
-            ulong a1 = GetA1();
-            ulong a2 = GetA2();
-            ulong a3 = GetA3();
-            ulong a4 = GetA4();
-            ulong a6 = GetA6();
+            double a1 = GetA1();
+            double a2 = GetA2();
+            double a3 = GetA3();
+            double a4 = GetA4();
+            double a6 = GetA6();
 
-            // http://stackoverflow.com/questions/9173485/how-can-i-create-an-in-memory-sqlite-database
-            var connection = new SQLiteConnection("Data Source=:memory:");
-            connection.Open();
-
-            // Создаём таблицы
-            string[] sqls1 =
-            {
-                "CREATE TABLE t1 (x INTEGER , key1 INTEGER )",
-                "CREATE TABLE t2 (y INTEGER , key2 INTEGER )",
-                "CREATE TABLE t3 (x INTEGER , y INTEGER , key3 INTEGER )"
-            };
-
-            foreach (string sql in sqls1)
-                new SQLiteCommand(sql, connection).ExecuteNonQuery();
-
-            // Заполняем таблицы начальными значениями
-            for (ulong x = 0; x < n; x++)
-            {
-                ulong x2 = (x*x)%n;
-                ulong x3 = (x2*x)%n;
-                ulong a2X2 = (a2*x2)%n;
-                ulong a4X = (a4*x)%n;
-                ulong key1 = (x3 + a2X2 + a4X + a6)%n;
-                string sql = "INSERT INTO t1 (x, key1) VALUES (" + x + "," + key1 + ")";
-                new SQLiteCommand(sql, connection).ExecuteNonQuery();
-            }
-
-            for (ulong y = 0; y < n; y++)
-            {
-                ulong y2 = y*y%n;
-                ulong a3Y = (a3*y)%n;
-                ulong key2 = (y2 + a3Y)%n;
-                string sql = "INSERT INTO t2 (y, key2) VALUES (" + y + "," + key2 + ")";
-                new SQLiteCommand(sql, connection).ExecuteNonQuery();
-            }
-
-            if ((a1%n) != 0)
-                for (ulong x = 0; x < n; x++)
-                {
-                    ulong a1X = (a1*x)%n;
-                    for (ulong y = 0; y < n; y++)
-                    {
-                        ulong key3 = (a1X*y)%n;
-                        string sql = "INSERT INTO t3 (x, y, key3) VALUES (" + x + "," + y + "," + key3 + ")";
-                        new SQLiteCommand(sql, connection).ExecuteNonQuery();
-                    }
-                }
-
-            // Создаём индексы для таблиц
-            string[] sqls2 =
-            {
-                "CREATE INDEX t1key1 ON t1 (key1)",
-                "CREATE INDEX t2key2 ON t2 (key2)",
-                "CREATE INDEX t3key3 ON t3 (key3)",
-                "CREATE UNIQUE INDEX t1x ON t1 (x)",
-                "CREATE UNIQUE INDEX t2y ON t2 (y)",
-                "CREATE INDEX t3x ON t3 (x)",
-                "CREATE INDEX t3y ON t3 (y)"
-            };
-
-            foreach (string sql in sqls2)
-                new SQLiteCommand(sql, connection).ExecuteNonQuery();
+            // Диапазон изменения переменноу X и количество интервалов
+            double xmin = GetXmin();
+            double xmax = GetXmax();
+            ulong n = GetN();
 
             // http://stackoverflow.com/questions/10622674/chart-creating-dynamically-in-net-c-sharp
             var series1 = new Series
@@ -102,42 +40,56 @@ namespace Elliptic
                 Color = Color.Black,
                 IsVisibleInLegend = false,
                 IsXValueIndexed = true,
-                ChartType = SeriesChartType.Point
+                ChartType = SeriesChartType.Line
             };
 
-            // Выполныем JOIN запрос и получаем результаты
-            // Чем дороже DBMS тем лучше алгоритмы она использует для оптимизации запросов
-            string select = ((a1 % n) == 0)
-                ? "SELECT t1.x,t2.y FROM t1, t2 WHERE key1=key2"
-                : "SELECT t1.x,t2.y FROM t1, t2, t3 WHERE (key1=key2+key3 or key1+" + n +
-                  "=key2+key3) AND t1.x=t3.x AND t2.y=t3.y";
-            SQLiteDataReader reader = new SQLiteCommand(select, connection).ExecuteReader();
+            var series2 = new Series
+            {
+                Name = "Series2",
+                Color = Color.Black,
+                IsVisibleInLegend = false,
+                IsXValueIndexed = true,
+                ChartType = SeriesChartType.Line
+            };
+
             var sb = new StringBuilder();
             var sb1 = new StringBuilder();
-            sb.AppendLine("y^2+a1*x*y+a3*y = x^3+a2*x^2+a4*x+a6 mod n");
-            sb.AppendLine("n=" + n);
+            sb.AppendLine("y^2+a1*x*y+a3*y = x^3+a2*x^2+a4*x+a6");
             sb.AppendLine("a1=" + a1);
             sb.AppendLine("a2=" + a2);
             sb.AppendLine("a3=" + a3);
             sb.AppendLine("a4=" + a4);
             sb.AppendLine("a6=" + a6);
             sb.AppendLine();
-            sb.AppendLine("# X Y");
-            sb1.AppendLine("# X Y");
-            while (reader.Read())
+            sb.AppendLine("# X Y1 Y2");
+            sb1.AppendLine("# X Y1 Y2");
+            for (ulong i = 0; i <= n; i++)
             {
-                int x = Convert.ToInt32(reader[0]);
-                int y = Convert.ToInt32(reader[1]);
-                series1.Points.AddXY(x, y);
-                sb.AppendLine(x + " " + y);
-                sb1.AppendLine(x + " " + y);
+                double x = (xmin*(n - i) + xmax*i)/n;
+
+                // Расчитываем параметры квадратичного уравнения для данного X
+                const double a = 1;
+                double b = a1*x + a3;
+                double c = -(x*x*x + a2*x*x + a4*x + a6);
+
+                // По формуле за шестой класс средней школы вычисляем решение квадратичного уравнения
+                double d = b*b - 4*a*c;
+                if (d < 0) continue;
+
+                double y1 = (-b - Math.Sqrt(d))/(2*a);
+                double y2 = (-b + Math.Sqrt(d))/(2*a);
+
+                series1.Points.AddXY(x, y1);
+                series2.Points.AddXY(x, y2);
+
+                sb.AppendLine(x + " " + y1 + " " + y2);
+                sb1.AppendLine(x + " " + y1 + " " + y2);
             }
 
             // Выдаём отчёт о проделанной работе
-            SetChart(series1);
+            SetChart(series1, series2);
             SetReport(sb.ToString());
             SetReport1(sb1.ToString());
-            connection.Close();
 
             UnlockForm();
             ActivatePage(2);
@@ -145,6 +97,25 @@ namespace Elliptic
             // Start the asynchronous operation.
             if (backgroundWorker1.IsBusy) return;
             backgroundWorker1.RunWorkerAsync();
+        }
+
+        private void SetChart(Series series1, Series series2)
+        {
+            // InvokeRequired required compares the thread ID of the
+            // calling thread to the thread ID of the creating thread.
+            // If these threads are different, it returns true.
+            if (chart1.InvokeRequired)
+            {
+                SetChartCallback d = SetChart;
+                Invoke(d, new object[] {series1, series2});
+            }
+            else
+            {
+                chart1.Series.Clear();
+                chart1.Series.Add(series1);
+                chart1.Series.Add(series2);
+                chart1.Invalidate();
+            }
         }
 
         private void SetReport(string text)
@@ -260,54 +231,74 @@ namespace Elliptic
             return (ulong) Invoke(d, new object[] {});
         }
 
-        private ulong GetA1()
+        private double GetXmin()
         {
             // InvokeRequired required compares the thread ID of the
             // calling thread to the thread ID of the creating thread.
             // If these threads are different, it returns true.
-            if (!numericUpDownA1.InvokeRequired) return (ulong) numericUpDownA1.Value;
-            GetNumberCallback d = GetA1;
-            return (ulong) Invoke(d, new object[] {});
+            if (!numericUpDownA1.InvokeRequired) return (double) numericUpDownXmin.Value;
+            GetDoubleCallback d = GetXmin;
+            return (double) Invoke(d, new object[] {});
         }
 
-        private ulong GetA2()
+        private double GetXmax()
         {
             // InvokeRequired required compares the thread ID of the
             // calling thread to the thread ID of the creating thread.
             // If these threads are different, it returns true.
-            if (!numericUpDownA2.InvokeRequired) return (ulong) numericUpDownA2.Value;
-            GetNumberCallback d = GetA2;
-            return (ulong) Invoke(d, new object[] {});
+            if (!numericUpDownA1.InvokeRequired) return (double) numericUpDownXmax.Value;
+            GetDoubleCallback d = GetXmax;
+            return (double) Invoke(d, new object[] {});
         }
 
-        private ulong GetA3()
+        private double GetA1()
         {
             // InvokeRequired required compares the thread ID of the
             // calling thread to the thread ID of the creating thread.
             // If these threads are different, it returns true.
-            if (!numericUpDownA3.InvokeRequired) return (ulong) numericUpDownA3.Value;
-            GetNumberCallback d = GetA3;
-            return (ulong) Invoke(d, new object[] {});
+            if (!numericUpDownA1.InvokeRequired) return (double) numericUpDownA1.Value;
+            GetDoubleCallback d = GetA1;
+            return (double) Invoke(d, new object[] {});
         }
 
-        private ulong GetA4()
+        private double GetA2()
         {
             // InvokeRequired required compares the thread ID of the
             // calling thread to the thread ID of the creating thread.
             // If these threads are different, it returns true.
-            if (!numericUpDownA4.InvokeRequired) return (ulong) numericUpDownA4.Value;
-            GetNumberCallback d = GetA4;
-            return (ulong) Invoke(d, new object[] {});
+            if (!numericUpDownA2.InvokeRequired) return (double) numericUpDownA2.Value;
+            GetDoubleCallback d = GetA2;
+            return (double) Invoke(d, new object[] {});
         }
 
-        private ulong GetA6()
+        private double GetA3()
         {
             // InvokeRequired required compares the thread ID of the
             // calling thread to the thread ID of the creating thread.
             // If these threads are different, it returns true.
-            if (!numericUpDownA6.InvokeRequired) return (ulong) numericUpDownA6.Value;
-            GetNumberCallback d = GetA6;
-            return (ulong) Invoke(d, new object[] {});
+            if (!numericUpDownA3.InvokeRequired) return (double) numericUpDownA3.Value;
+            GetDoubleCallback d = GetA3;
+            return (double) Invoke(d, new object[] {});
+        }
+
+        private double GetA4()
+        {
+            // InvokeRequired required compares the thread ID of the
+            // calling thread to the thread ID of the creating thread.
+            // If these threads are different, it returns true.
+            if (!numericUpDownA4.InvokeRequired) return (double) numericUpDownA4.Value;
+            GetDoubleCallback d = GetA4;
+            return (double) Invoke(d, new object[] {});
+        }
+
+        private double GetA6()
+        {
+            // InvokeRequired required compares the thread ID of the
+            // calling thread to the thread ID of the creating thread.
+            // If these threads are different, it returns true.
+            if (!numericUpDownA6.InvokeRequired) return (double) numericUpDownA6.Value;
+            GetDoubleCallback d = GetA6;
+            return (double) Invoke(d, new object[] {});
         }
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
@@ -326,29 +317,15 @@ namespace Elliptic
                 File.WriteAllText(saveFileDialog2.FileName, textBox3.Text);
         }
 
-        private void SetChart(Series series1)
-        {
-            // InvokeRequired required compares the thread ID of the
-            // calling thread to the thread ID of the creating thread.
-            // If these threads are different, it returns true.
-            if (chart1.InvokeRequired)
-            {
-                SetChartCallback d = SetChart;
-                Invoke(d, new object[] { series1 });
-            }
-            else
-            {
-                chart1.Series.Clear();
-                chart1.Series.Add(series1);
-                chart1.Invalidate();
-            }
-        }
-        private delegate void SetChartCallback(Series series1);
         private delegate void ActivatePageCallback(int i);
+
+        private delegate double GetDoubleCallback();
 
         private delegate ulong GetNumberCallback();
 
         private delegate void LockUnlockFormCallback();
+
+        private delegate void SetChartCallback(Series series1, Series series2);
 
         private delegate void SetReportCallback(string text);
 
