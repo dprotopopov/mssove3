@@ -18,17 +18,17 @@ namespace EllipticR
         {
             LockForm();
 
-            // Параметры элиптической кривой
-            double a1 = GetA1();
-            double a2 = GetA2();
-            double a3 = GetA3();
-            double a4 = GetA4();
-            double a6 = GetA6();
+            // Параметры эллиптической кривой
+            var a1 = GetA1();
+            var a2 = GetA2();
+            var a3 = GetA3();
+            var a4 = GetA4();
+            var a6 = GetA6();
 
-            // Диапазон изменения переменноу X и количество интервалов
-            double xmin = GetXmin();
-            double xmax = GetXmax();
-            ulong n = GetN();
+            // Диапазон изменения переменной X и количество интервалов
+            var xmin = GetXmin();
+            var xmax = GetXmax();
+            var n = GetN();
 
             // http://stackoverflow.com/questions/10622674/chart-creating-dynamically-in-net-c-sharp
             var series1 = new Series
@@ -62,25 +62,25 @@ namespace EllipticR
             sb1.AppendLine("# X Y1 Y2");
             for (ulong i = 0; i <= n; i++)
             {
-                double x = (xmin*(n - i) + xmax*i)/n;
+                var x = (xmin*(n - i) + xmax*i)/n;
 
-                // Расчитываем параметры квадратичного уравнения для данного X
-                const double a = 1;
-                double b = a1*x + a3;
-                double c = -(x*x*x + a2*x*x + a4*x + a6);
+                // Рассчитываем параметры квадратичного уравнения для данного X
+                const int a = 1;
+                var b = a1*x + a3;
+                var c = -(x*x*x + a2*x*x + a4*x + a6);
 
                 // По формуле за шестой класс средней школы вычисляем решение квадратичного уравнения
-                double d = b*b - 4*a*c;
+                var d = b*b - 4*a*c;
                 if (d < 0) continue;
 
-                double y1 = (-b - Math.Sqrt(d))/(2*a);
-                double y2 = (-b + Math.Sqrt(d))/(2*a);
+                var y1 = (-b - Math.Sqrt(d))/(2*a);
+                var y2 = (-b + Math.Sqrt(d))/(2*a);
 
                 series1.Points.AddXY(x, y1);
                 series2.Points.AddXY(x, y2);
 
-                sb.AppendLine(x + " " + y1 + " " + y2);
-                sb1.AppendLine(x + " " + y1 + " " + y2);
+                sb.AppendLine(string.Format("{0} {1} {2}", x, y1, y2));
+                sb1.AppendLine(string.Format("{0} {1} {2}", x, y1, y2));
             }
 
             // Выдаём отчёт о проделанной работе
@@ -100,7 +100,7 @@ namespace EllipticR
             if (chart1.InvokeRequired)
             {
                 SetChartCallback d = SetChart;
-                Invoke(d, new object[] {series1, series2});
+                Invoke(d, series1, series2);
             }
             else
             {
@@ -119,7 +119,7 @@ namespace EllipticR
             if (textBox2.InvokeRequired)
             {
                 SetReportCallback d = SetReport;
-                Invoke(d, new object[] {text});
+                Invoke(d, text);
             }
             else
             {
@@ -135,7 +135,7 @@ namespace EllipticR
             if (textBox3.InvokeRequired)
             {
                 SetReportCallback d = SetReport1;
-                Invoke(d, new object[] {text});
+                Invoke(d, text);
             }
             else
             {
@@ -151,7 +151,7 @@ namespace EllipticR
             if (wizardPages1.InvokeRequired)
             {
                 ActivatePageCallback d = ActivatePage;
-                Invoke(d, new object[] {i});
+                Invoke(d, i);
             }
             else
             {
@@ -301,6 +301,13 @@ namespace EllipticR
                 File.WriteAllText(saveFileDialog2.FileName, textBox3.Text);
         }
 
+        private void chart1_Click(object sender, EventArgs e)
+        {
+            // http://www.dotnetperls.com/chart
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                chart1.SaveImage(saveFileDialog1.FileName, ChartImageFormat.Png);
+        }
+
         private delegate void ActivatePageCallback(int i);
 
         private delegate double GetDoubleCallback();
@@ -312,12 +319,5 @@ namespace EllipticR
         private delegate void SetChartCallback(Series series1, Series series2);
 
         private delegate void SetReportCallback(string text);
-
-        private void chart1_Click(object sender, EventArgs e)
-        {
-            // http://www.dotnetperls.com/chart
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
-                chart1.SaveImage(saveFileDialog1.FileName, ChartImageFormat.Png);
-        }
     }
 }

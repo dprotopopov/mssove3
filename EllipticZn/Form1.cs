@@ -22,7 +22,7 @@ namespace EllipticZn
             // Параметры кольца вычетов Z|n
             var n = GetN();
 
-            // Параметры элиптической кривой
+            // Параметры эллиптической кривой
             var a1 = GetA1();
             var a2 = GetA2();
             var a3 = GetA3();
@@ -52,7 +52,7 @@ namespace EllipticZn
                 var a2X2 = (a2*x2)%n;
                 var a4X = (a4*x)%n;
                 var key1 = (x3 + a2X2 + a4X + a6)%n;
-                var sql = "INSERT INTO t1 (x, key1) VALUES (" + x + "," + key1 + ")";
+                var sql = string.Format("INSERT INTO t1 (x, key1) VALUES ({0},{1})", x, key1);
                 new SQLiteCommand(sql, connection).ExecuteNonQuery();
             }
 
@@ -61,7 +61,7 @@ namespace EllipticZn
                 var y2 = y*y%n;
                 var a3Y = (a3*y)%n;
                 var key2 = (y2 + a3Y)%n;
-                var sql = "INSERT INTO t2 (y, key2) VALUES (" + y + "," + key2 + ")";
+                var sql = string.Format("INSERT INTO t2 (y, key2) VALUES ({0},{1})", y, key2);
                 new SQLiteCommand(sql, connection).ExecuteNonQuery();
             }
 
@@ -72,7 +72,7 @@ namespace EllipticZn
                     for (ulong y = 0; y < n; y++)
                     {
                         var key3 = (a1X*y)%n;
-                        var sql = "INSERT INTO t3 (x, y, key3) VALUES (" + x + "," + y + "," + key3 + ")";
+                        var sql = string.Format("INSERT INTO t3 (x, y, key3) VALUES ({0},{1},{2})", x, y, key3);
                         new SQLiteCommand(sql, connection).ExecuteNonQuery();
                     }
                 }
